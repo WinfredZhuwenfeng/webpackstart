@@ -4,25 +4,29 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const path = require('path')
 const webpack = require('webpack')
 
+function join(...args) { // ...args 出现在参数中叫做 rest 参数，它是把所有剩余参数放入一个数组
+  return path.join(__dirname, ...args) // 出现在非函数参数的位置，...args 表示展示操作符，表示将数组展开，元素一个一个的摆放到这里
+}
+
 module.exports = {
-  mode: "development",
+  mode: "development",//可提高编译速度
   devtool: 'inline-source-map',
   devServer:{
     contentBase:'./dist',
     hot:true
   },
-  entry: "./src/main.js",
+  entry: join("./src/main.js"),
   output: {
-    path: path.join(__dirname, "dist"),
+    path: join(__dirname, "dist"),
     filename: "bundle.js"
   },
   plugins: [
-    new VueLoaderPlugin(),
+    new VueLoaderPlugin(),//https://vue-loader.vuejs.org/zh/guide/#%E6%89%8B%E5%8A%A8%E9%85%8D%E7%BD%AE
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
-      template: './index.html',
+      template: join('./index.html'),
     })
   ],
   module: {
@@ -56,12 +60,12 @@ module.exports = {
       use: {
         loader: 'babel-loader',
         options: {
-          presets: ['env']
+          presets: ['env']//注意版本问题 https://www.npmjs.com/package/babel-loader
         }
       }
     },{
       test:/\.vue$/,
-      use:['vue-loader']
+      use:['vue-loader']// 依赖于 vue-template-compiler,需要额外安装
     }
     ]
   },
